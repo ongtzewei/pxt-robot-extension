@@ -8,13 +8,13 @@ namespace Robot {
 
     export enum Direction {
         //% block="up"
-        Up = 1,
+        Up = 0,
         //% block="right"
-        Right=2,
+        Right = 1,
         //% block="down"
-        Down = 3,
+        Down = 2,
         //% block="left"
-        Left = 4,
+        Left = 3,
     }
 
     let myRobot: Sprite;
@@ -27,8 +27,7 @@ namespace Robot {
      */
     //% block
     export function turnLeft(): void {
-        const newDirection = currentDirection + 1;
-        currentDirection = (newDirection>4)?1:newDirection;
+        currentDirection = (currentDirection - 1 + 4) % 4;
         setDirection(currentDirection);
     }
 
@@ -37,8 +36,7 @@ namespace Robot {
      */
     //% block
     export function turnRight(): void {
-        const newDirection = currentDirection - 1;
-        currentDirection = (newDirection<1)?1:newDirection;
+        currentDirection = (currentDirection + 1) % 4;
         setDirection(currentDirection);
     }
 
@@ -72,12 +70,27 @@ namespace Robot {
      */
     //% block
     export function setRobotPosition(x: number, y: number, d: Direction): void {
-        myRobot = sprites.create(assets.image`myRobotDown`, SpriteKind.Player);
+        let robotImage: Image;
+        switch (d) {
+            case Direction.Up:
+                robotImage = assets.image`myRobotUp`;
+                break;
+            case Direction.Right:
+                robotImage = assets.image`myRobotRight`;
+                break;
+            case Direction.Down:
+                robotImage = assets.image`myRobotDown`;
+                break;
+            case Direction.Left:
+                robotImage = assets.image`myRobotLeft`;
+                break;
+        }
+
+        myRobot = sprites.create(robotImage, SpriteKind.Player);
         currentX = x;
         currentY = y;
         currentDirection = d;
         setPosition(currentX, currentY);
-        setDirection(d);
     }
 
     function setPosition(x: number, y: number) {
